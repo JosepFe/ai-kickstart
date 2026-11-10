@@ -1,0 +1,24 @@
+{
+  "name": "ai-kickstart",
+  "description": "AI Kickstart: a project methodology for Claude Code",
+  "owner": {
+    "name": "JosepFe",
+    "url": "https://github.com/JosepFe"
+  },
+  "plugins": [
+    {
+      "name": "ai-kickstart",
+      "description": "Define and build projects with Claude Code: prototype as contract, user stories, parallel waves, honest gates and security",
+      "source": "./",
+      "version": "1.0.0",
+      "category": "development",
+      "tags": [
+        "methodology",
+        "kickstart",
+        "prototype",
+        "qa",
+        "security"
+      ]
+    }
+  ]
+}

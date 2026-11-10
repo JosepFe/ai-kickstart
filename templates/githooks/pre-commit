@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# AI Kickstart: blocks the commit if gitleaks finds a secret in the staged changes.
+# Enable once per clone: git config core.hooksPath .githooks
+set -euo pipefail
+if ! command -v gitleaks >/dev/null; then
+  echo "pre-commit: gitleaks not installed (https://github.com/gitleaks/gitleaks)" >&2
+  exit 1
+fi
+gitleaks git --staged --redact --no-banner .
