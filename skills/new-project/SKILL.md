@@ -7,6 +7,7 @@ description: Start a new project with AI Kickstart - create the repo with intern
 
 The methodology lives in `../../methodology/` relative to this skill's folder. Read all of it (start with `README.md` and `01-methodology.md`) before phase 1.
 
+0. **Prerequisites** (quick, don't block on optional ones): `git --version`, `gitleaks version` (8.19+), `node --version`, `docker --version`, and whether the `security-audit` skill is installed. Report one line per tool: ok / missing + the install command for their OS (see the plugin README, "Prerequisites"). Only git is required to start defining; gitleaks is needed before the first commit, the rest before implementing or deploying.
 1. **Language first**: ask whether the project documentation should be in **English or Spanish** (question 0 of `06-questionnaire-and-stack.md`) and continue the conversation and the documents in that language.
 2. **Minimum to start**: name and repo path (default `~/Repos/<lowercase-name>`; if it exists, use it). Don't ask again for anything the user already said.
 3. **Repo**: create the folder if missing and `git init` (never touch the git identity). Create the `internal_docs/` skeleton from `02-templates.md` §Structure.
