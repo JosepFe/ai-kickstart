@@ -10,7 +10,7 @@
       "name": "ai-kickstart",
       "description": "Define and build projects with Claude Code: prototype as contract, user stories, parallel waves, honest gates and security",
       "source": "./",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "category": "development",
       "tags": [
         "methodology",

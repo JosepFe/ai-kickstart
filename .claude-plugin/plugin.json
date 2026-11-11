@@ -1,7 +1,7 @@
 {
   "name": "ai-kickstart",
   "description": "Methodology to define and build projects with Claude Code: questionnaire and default stack, HTML prototype as contract, stories bound to the prototype, docs in the repo, story-by-story or parallel-wave execution and security before deploying",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": {
     "name": "JosepFe",
     "url": "https://github.com/JosepFe"

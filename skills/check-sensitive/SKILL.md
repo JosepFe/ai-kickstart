@@ -37,6 +37,7 @@ Over `git diff <range>` (for long diffs, delegate to a cheap read-only subagent 
 | Private infrastructure | own or company domains, internal or Tailscale/VPN IPs, hostnames, internal service ports, server paths |
 | Personal paths and environment | `/home/<user>`, `C:\Users\…`, synced-drive or notes-vault paths |
 | Content that isn't the project's | personal notes, to-dos, third-party work data inside `internal_docs/` |
+| Security-audit output | `security-audit` reports or summaries (`*security-audit*.md`, `findings.json`, `REPORT.md`) anywhere in the repo: they belong in personal notes |
 | Files that shouldn't be there | database dumps, backups, `.pem`/`.key`, `.p12`, exports, screenshots with real data |
 
 If `~/.config/ai-kickstart/sensitive-terms.txt` exists (outside the repo, one term per line: company names, domains, people), also search for those terms with `grep -niF -f`.

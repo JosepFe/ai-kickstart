@@ -100,10 +100,10 @@ Close the epic
     Architecture/               00-vision.md, 01-architecture.md
     Design/                     prototype.html, README.md (tokens, parity matrix)
     Epics/                      00-epic-map.md, 00-screen-inventory.md, E01-…/EPIC.md, F01-…/FEATURE.md, US-001.md…
-    QA/                         00-qa.md, security/ (audit summaries)
+    QA/                         00-qa.md
 ```
 
-Personal or sensitive notes (servers, accounts, people) stay **outside** the repo.
+Personal or sensitive notes (servers, accounts, people) and the `security-audit` summaries stay **outside** the repo, in your own notes.
 
 ## What's included
 
@@ -127,7 +127,7 @@ The skills also understand requests in Spanish.
 | Every commit | gitleaks hook blocks secrets |
 | Before every push | `check-sensitive`: real personal data, private domains, internal IPs, personal paths, private notes |
 | Closing an epic | dependency audit (`npm audit`, `dotnet list package --vulnerable`) |
-| Before deploying | `security-audit` (`quick` or `standard` profile); a summary goes to `internal_docs/QA/security/` |
+| Before deploying | `security-audit` (`quick` or `standard` profile); the summary goes to your personal notes, not the repo (it lists open weaknesses); fixes become stories and accepted risks a `D#` |
 
 ## Updating and uninstalling
 

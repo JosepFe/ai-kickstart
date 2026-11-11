@@ -26,7 +26,7 @@ Project docs language: {{English | Spanish}}.
 | Vision and architecture | `internal_docs/Architecture/` |
 | Epic map, screen inventory, epics, features, stories | `internal_docs/Epics/` |
 | Visual contract (prototype) and parity matrix | `internal_docs/Design/prototype.html`, `internal_docs/Design/README.md` |
-| QA and security reports | `internal_docs/QA/` |
+| QA | `internal_docs/QA/` (security-audit summaries are kept outside the repo, in personal notes) |
 | Methodology | AI Kickstart plugin (`ai-kickstart`, folder `methodology/`); `03-execution` is the playbook |
 
 ## Commands (gates, in order)

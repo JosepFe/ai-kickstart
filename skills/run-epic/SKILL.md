@@ -12,6 +12,6 @@ The methodology lives in `../../methodology/` relative to this skill's folder (t
 3. **Wave plan** (if parallel): groups of stories with no dependencies between them, at most 3 per wave, at most one story with a migration per wave, the prototype never edited in parallel. Show it as a table (wave → stories → shared files) and **wait for approval**.
 4. **For each story**: `run-story`. In parallel, one subagent per story in its own worktree and branch `story/E0N-US-NNN`, with a self-contained prompt (story, run-story rules, which shared files it may touch).
 5. **After each wave**: merge branches one by one into the epic branch, resolve conflicts (migrations: regenerate if they clash), **wave-level gates**, `qa-reviewer` over the whole, wave report, remove the worktrees. If a conflict changes another story's behaviour, stop and ask.
-6. **Close**: epic gates, dependency audit, epic DoD checklist, `security-audit` (`quick` or `standard` profile) if the app is ready to deploy, and the final report.
+6. **Close**: epic gates, dependency audit, epic DoD checklist, `security-audit` (`quick` or `standard` profile) if the app is ready to deploy, with its summary in the user's personal notes (never in the repo; in the repo only fix stories or a `D#`), and the final report.
 
 Never push or deploy: at the end, remind the user to run `check-sensitive` before pushing.

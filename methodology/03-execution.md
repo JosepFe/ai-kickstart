@@ -91,7 +91,8 @@ Everything else: carry on, recording `A#` assumptions in the EPIC.
 - **Two modes**: *guidance* (questions or a focused review, writes no files) and *full audit* (ask explicitly: "security audit this repo, quick profile"). The full one launches many subagents: it is expensive.
 - **Profile**: `quick` when closing an epic that is going to be deployed; `standard` before the first production release or after changes to auth, data or dependencies; `deep` only for sensitive third-party data. An agent budget can be set.
 - **Output**: outside the repo, in `~/security-audit-skill/<repo>/run-N/` (`REPORT.md`, `findings.json`…). It is cumulative: each run builds on the previous ones.
-- **In the repo** only a summary in `internal_docs/QA/security/YYYY-MM-DD-security-audit.md`: date, commit, profile, coverage, findings by severity with their status (fixed in `<hash>` / accepted as `D#`) and the `needs_validation` items. No exploitation steps for anything still open.
+- **Summary in your personal notes, never in the repo** (`<Project>/Security/YYYY-MM-DD-security-audit.md`, see [02-templates](02-templates.md)): date, commit, profile, cost, coverage, findings by severity with their status (fixed in `<hash>` / accepted as `D#`) and the `needs_validation` items. It describes weaknesses that may still be open and how the app is deployed, so it stays out of the repo even when the repo is private: once committed it lives on in git history.
+- **In the repo** only the consequence: a story that fixes it, or a decision `D#` in the EPIC (`accepted after the security audit of YYYY-MM-DD`) that does not describe how to exploit the weakness.
 - Without an OS-level sandbox it does not execute project code: whatever it cannot verify stays as `needs_validation`, to be checked by hand.
 - Critical and high findings are fixed before deploying or accepted as a `D#` with approval.
 
