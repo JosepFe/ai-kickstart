@@ -104,7 +104,7 @@ Also: no secrets in the repo or the frontend; nothing installed system-wide with
 
 **Per wave:** branches merged and conflicts resolved · wave-level gates · `qa-reviewer` findings.
 
-**At the end of the epic:** stories done (with hash), skipped and why, NOT RUN gates, migrations to apply, accepted vulnerable dependencies, `check-sensitive` and `security-audit` results, assumptions to confirm, open questions, epic DoD checklist.
+**At the end of the epic:** stories done (with hash), skipped and why, NOT RUN gates, migrations to apply, accepted vulnerable dependencies, `check-sensitive` and `security-audit` results, assumptions to confirm, open questions, epic DoD checklist, and, if the epic is deployed, the **proposed version with its reason and the draft release notes** (§10).
 
 ## 9. Git
 
@@ -112,3 +112,32 @@ Also: no secrets in the repo or the frontend; nothing installed system-wide with
 - Never `git add -A` / `git add .`: files by name. Don't touch user work unrelated to the story.
 - In parallel: one branch per story (`story/E0N-US-NNN`) in its worktree; merged into the epic branch, worktrees removed after integrating.
 - Before every push, `check-sensitive`.
+
+## 10. Releases
+
+A deployed app gets a named version: tag `vX.Y.Z` on the commit that is deployed, a release on the forge with its notes, and the images or build published as `X.Y.Z` (as well as `sha-<commit>`). The version shown in the app comes from the tag (build argument), never from a number edited by hand. One release per deploy; a deploy of several epics is one release.
+
+**Which number** ([SemVer](https://semver.org)), decided from what changed since the last tag (commits, EPIC decisions, migrations, `.env.example`), from the users' and the operator's point of view:
+
+| Bump | When (any one is enough) |
+|---|---|
+| **Major** | Users lose something they had (a feature or data removed or changed in a way they notice) · an installed client or a client of the API stops working until it updates · a data migration that cannot be rolled back without losing data · the operator must act or the deploy fails (a new **required** environment variable, a manual step, a change of domain or of the proxy) |
+| **Minor** | Something new for users (a `feat` commit) and nothing major |
+| **Patch** | Only fixes and invisible changes (`fix`, `perf`, `refactor`, security fixes with no new behaviour, `docs`, `test`, `chore`) |
+
+- **Before `1.0.0`** (`0.y.z`): what would be major bumps the minor, the rest the patch. `1.0.0` is the first release the owner calls ready for its real users; only they decide it.
+- **Who decides**: Claude applies the table and **proposes** the number with the reason (the commit, decision or variable that sets it) in the epic report. Minor and patch follow the table; a **major** (and `1.0.0`) needs the user's explicit approval, recorded as a `D#`. A doubtful case is decided upwards and said.
+- **Release notes**, in the project's docs language, for the people who use and run the app, not a commit dump. Generated from the conventional commits since the last tag and the stories they close, then edited:
+
+  ```markdown
+  ## vX.Y.Z — <date>
+  ### New            (feat: one line each, in the user's words; the epic or story in brackets)
+  ### Fixed          (fix)
+  ### To deploy      (migrations and whether they can be rolled back, new or changed environment
+                      variables, manual steps; "nothing" if none)
+  ```
+
+  Security fixes are named by their effect ("invite links can be regenerated"), never by how the weakness was exploited (same rule as the `security-audit` summary, §7). No personal data, private domains or internal IPs (`check-sensitive` reads the notes too).
+- **When**: the tag is created and pushed only with the order to deploy (pushing it publishes). The draft notes travel in the epic report until then.
+- **Scaffold**: a `release` workflow triggered by `v*` tags that runs the gates, publishes the images or build as `X.Y.Z` and creates the release with the notes file (`internal_docs/Releases/vX.Y.Z.md` in the repo, or the tag's message).
+

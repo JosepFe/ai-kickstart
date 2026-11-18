@@ -80,7 +80,7 @@ Build (run-epic / run-story)
    └▶ story gates ─▶ qa-reviewer ─▶ local commit (gitleaks hook)
  after each wave: merge ─▶ full gates ─▶ qa-reviewer over the whole
 Close the epic
- epic Definition of Done ─▶ check-sensitive ─▶ push ─▶ security-audit ─▶ deploy
+ epic Definition of Done ─▶ check-sensitive ─▶ push ─▶ security-audit ─▶ release vX.Y.Z ─▶ deploy
 ```
 
 - **Prototype as contract**: one section per screen, states addressable by URL (`?state=empty`), `data-testid`s. Parity tests check the app has the same structure and copy (no pixel diffs).

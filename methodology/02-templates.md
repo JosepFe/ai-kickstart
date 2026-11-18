@@ -179,3 +179,4 @@ Sizes: **S** 15-30 min · **M** 30-60 min · **L** 1-2 h. Bigger, or more than 5
 6. If the epic leaves the app ready to deploy (or is the last one): **`security-audit`** done (`quick` or `standard` profile, [03-execution](03-execution.md) §7), summary in your personal notes (never in the repo) and no open critical or high findings (fixed by a story, or accepted as a `D#` in the EPIC).
 7. **Operations** (if deployed): environment variables in `.env.example` and in the architecture, healthcheck, database backups and, on a self-hosted server, its setup there (proxy, domains, backups, monitoring).
 8. Docs up to date: `internal_docs/README.md`, epic map, EPIC and the epic's final report.
+9. **Release** (if deployed): proposed version with its reason and draft notes ([03-execution](03-execution.md) §10); a major or `1.0.0` approved as a `D#`; the tag `vX.Y.Z` is created only with the order to deploy.
