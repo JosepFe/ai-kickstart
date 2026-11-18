@@ -115,7 +115,7 @@ Also: no secrets in the repo or the frontend; nothing installed system-wide with
 
 ## 10. Releases
 
-A deployed app gets a named version: tag `vX.Y.Z` on the commit that is deployed, a release on the forge with its notes, and the images or build published as `X.Y.Z` (as well as `sha-<commit>`). The version shown in the app comes from the tag (build argument), never from a number edited by hand. One release per deploy; a deploy of several epics is one release.
+A deployed app gets a named version: tag `vX.Y.Z` on the commit that is deployed, a release on the forge with its notes, and the images or build published as `X.Y.Z` (as well as `sha-<commit>`). The version shown in the app is the tag's: either the build reads it from the tag, or the release commit sets it (`package.json` or equivalent) and the release workflow refuses a tag that does not match, renaming the images already built for that commit instead of rebuilding. One release per deploy; a deploy of several epics is one release.
 
 **Which number** ([SemVer](https://semver.org)), decided from what changed since the last tag (commits, EPIC decisions, migrations, `.env.example`), from the users' and the operator's point of view:
 
