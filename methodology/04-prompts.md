@@ -78,12 +78,12 @@ NO = in series}}.
 Stories: {{list}}. Out of scope: {{list}}. Already approved assumptions: {{A#}}.
 
 ## For each story
-1. Full loop (03-execution §2), with review by the qa-reviewer agent.
+1. Full loop (03-execution §2), with no per-story review (qa-reviewer only if the story touches auth, personal data, crypto or external input).
 2. One local commit, files by name, message in English, no --no-verify.
 3. Update the story status and the EPIC table in the same commit.
 
 ## For each wave (if parallel)
-Merge branches one by one, wave-level gates, qa-reviewer over the whole, wave report.
+Merge branches one by one, wave-merge gates, wave report. At epic close, one qa-reviewer pass in epic mode.
 
 ## Stop and ask me if
 A product question has no answer, a story is bigger than its size, a dependency is not

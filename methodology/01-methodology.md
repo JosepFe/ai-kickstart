@@ -64,6 +64,7 @@ With the prototype approved, write everything at once from the map and the proto
 
 - One `EPIC.md` per epic (decisions D#, assumptions A#, risks R#, questions Q#, story table and dependencies) and one `FEATURE.md` per feature.
 - One story per file: its criteria quote the screen's copy, states and data.
+- Every `FEATURE.md` criterion (C#) is covered by at least one story, and every non-functional requirement has a check.
 - Every story with UI lists its `#screen-{id}` (which exist); stories without UI say `No UI`.
 - Every prototype screen is referenced by at least one story.
 - If a story needs something the prototype lacks: **prototype first**.

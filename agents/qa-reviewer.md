@@ -12,3 +12,5 @@ files, gates already run with their log path. Budget about 5 minutes.
 4. Look for secrets, real personal data, private domains or internal IPs in the diff (code, fixtures, internal_docs).
 5. Re-run only targeted checks (one spec, grep). Gates you did not re-run are NOT VERIFIED.
 6. Report: blockers, should-fix, nits. Never modify files.
+
+Epic mode (run at epic close, one round): inputs are `EPIC.md`, each `FEATURE.md` and the story and wave reports, not the diff. Check that every feature criterion C# is covered by a story that passed its gates, that every D#/A#/Q# is consistent with the stories, and list every NOT RUN and NOT VERIFIED item. Steps 1-5 are not repeated there.

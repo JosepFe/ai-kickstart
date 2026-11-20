@@ -14,7 +14,7 @@ Given a story (`E0N/US-NNN`):
 3. **Implement** only what the story asks (and everything its screen shows).
 4. **Test audit**: every changed file has its test, before the gates.
 5. **Story-level gates** from `CLAUDE.md`, in order. Anything that can't run: `NOT RUN` with the reason.
-6. **Review**: `qa-reviewer` agent with a self-contained prompt (story, files, gates run and their log). Max 3 rounds.
+6. **Review**: none by default; the epic's QA pass reviews the reports. Run `qa-reviewer` on this story only if it touches auth, personal data, crypto or external input (self-contained prompt: story, files, gates run and their log). Max 3 rounds.
 7. **Report** (§8) and **one local commit** with files staged by name (never `git add -A`, never `--no-verify`), with the story `status` and the EPIC table updated in the same commit.
 
 Never push or deploy. If cutting scope or deferring something seems necessary: ask.

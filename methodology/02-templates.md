@@ -106,7 +106,37 @@ A decision the user has not stated stays **`proposed`**: never "approved by the 
 
 ## FEATURE.md
 
-Visible capability, non-functional requirements (performance, security, accessibility) and a table of its stories.
+```markdown
+---
+type: feature
+title: "E0N/F01 — <name>"
+description: "<one line>"
+tags: [<project>, feature, e0n]
+timestamp: <ISO>
+status: draft | ready | in-progress | done
+---
+# E0N/F01 — <name>
+
+## Capability
+<What the user can do once it works, 1-3 sentences. Quote the prototype screen.>
+
+## Acceptance criteria   (observable, 3-6, each with an ID)
+| ID | Criterion (what the user sees or the system returns) | Covered by |
+|---|---|---|
+| C1 | … | US-001, US-002 |
+
+## Non-functional requirements   (measurable: a number, a limit or a check; or `none`)
+| Area | Requirement | Check |
+|---|---|---|
+| Performance | … | gate `<command>` |
+| Security | … | … |
+| Accessibility | … on `#screen-…` | … |
+
+## Stories
+| US | Title | Covers | Size | Depends on | Status |
+```
+
+Every criterion is covered by at least one story's acceptance criteria, and each non-functional requirement has a check. A criterion without a story is a blocker, not a note.
 
 ## US-NNN.md
 

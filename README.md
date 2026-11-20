@@ -77,10 +77,10 @@ Define (new-project)
                                                      inventory                      (single pass)
 Build (run-epic / run-story)
  story by story, or parallel waves (git worktrees, max 3 agents)
-   └▶ story gates ─▶ qa-reviewer ─▶ local commit (gitleaks hook)
- after each wave: merge ─▶ full gates ─▶ qa-reviewer over the whole
+   └▶ story gates ─▶ local commit (gitleaks hook)
+ after each wave: merge ─▶ wave-merge gates ─▶ feature gate when its last story is done
 Close the epic
- epic Definition of Done ─▶ check-sensitive ─▶ push ─▶ security-audit ─▶ release vX.Y.Z ─▶ deploy
+ epic gates (E2E, parity) ─▶ qa-reviewer (epic mode) ─▶ epic Definition of Done ─▶ check-sensitive ─▶ push ─▶ security-audit ─▶ release vX.Y.Z ─▶ deploy
 ```
 
 - **Prototype as contract**: one section per screen, states addressable by URL (`?state=empty`), `data-testid`s. Parity tests check the app has the same structure and copy (no pixel diffs).

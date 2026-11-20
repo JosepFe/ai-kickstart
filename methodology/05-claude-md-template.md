@@ -37,13 +37,13 @@ Dependencies: `npm audit --audit-level=high`, `dotnet list package --vulnerable 
 ## Story loop — follow exactly
 When asked to implement a story: READ (story, feature, epic D#/A#/Q#, prototype screen) →
 IMPLEMENT only that story → TEST AUDIT (every changed file has a test) → GATES (story level) →
-REVIEW (qa-reviewer) → REPORT → one local COMMIT, files staged by name, story status and
+REPORT → one local COMMIT, files staged by name, story status and
 epic table updated in the same commit.
 
 ## Parallel waves
 When asked to run an epic in parallel: plan waves from the epic dependencies (no shared
 migration in the same wave), show the plan, run each story in its own worktree and branch
-`story/E0N-US-NNN` (max 3), merge one by one, run wave-level gates and one qa-reviewer pass.
+`story/E0N-US-NNN` (max 3), merge one by one, run wave-merge gates.
 
 ## Backend conventions (Vertical Slice)
 One slice per use case in `Features/<Feature>/<UseCase>/` (endpoint, request/response,
@@ -92,6 +92,7 @@ with their log path. Budget about 5 minutes.
 3. For a wave: check merged shared files (migrations, routes, DI registration) are consistent.
 4. Re-run only targeted checks (one spec, grep). Gates you did not re-run are NOT VERIFIED.
 5. Report: blockers, should-fix, nits. Never modify files.
+Epic mode (epic close, one round): inputs are EPIC.md, each FEATURE.md and the story and wave reports, not the diff. Check that every feature criterion C# is covered by a story that passed its gates, that every D#/A#/Q# is consistent, and list every NOT RUN and NOT VERIFIED item.
 ````
 
 ## `.claude/skills/run-story/SKILL.md`
@@ -102,8 +103,8 @@ name: run-story
 description: Implement one story end to end with the story loop of CLAUDE.md and report.
 ---
 Given a story id (E0N/US-NNN): check it is Ready (methodology 02-templates DoR), run the
-story loop from CLAUDE.md, ask the qa-reviewer agent for an independent review (max 3
-rounds), write the report (03-execution §8), update the story status and the epic table,
+story loop from CLAUDE.md, ask the qa-reviewer agent for an independent review only if the
+story touches auth, personal data, crypto or external input (max 3 rounds), write the report (03-execution §8), update the story status and the epic table,
 and make one local commit with files staged by name.
 ````
 
@@ -117,8 +118,8 @@ description: Implement a whole epic, in series or in parallel waves, and close i
 Given an epic id: read EPIC.md and its stories. If parallel was asked, build the wave plan
 (03-execution §3: only independent M/L stories, max 3 per wave, one migration per wave),
 show it and wait for approval. For each story, run-story (in parallel: one subagent per
-story in its own worktree and branch). After each wave, merge one by one, run wave-level
-gates and qa-reviewer on the whole. At the end: epic gates, dependency audit, epic DoD
+story in its own worktree and branch). After each wave, merge one by one, run wave-merge
+gates. At the end: epic gates, qa-reviewer in epic mode (one round), dependency audit, epic DoD
 checklist (02-templates), security-audit if the app is ready to deploy, and the epic
 report. Never push: tell the user to run check-sensitive first.
 ````

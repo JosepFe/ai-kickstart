@@ -25,7 +25,7 @@ status: active
 3. **Implement** only what the story asks (and everything the prototype screen shows for it).
 4. **Test audit**: `git diff --name-only` + new files; every change has its test, written **before** the gates.
 5. **Story-level gates** (§4) in order; on failure, fix and rerun from the failing one, then all.
-6. **Review** (optional at manual pace, recommended at continuous pace): read-only `qa-reviewer` agent with a self-contained prompt (story, files, gates already run with their log). Max 3 rounds.
+6. **Review**: no per-story review. The epic's QA pass ([run-epic](../skills/run-epic/SKILL.md) step 6) reads the story reports. Run `qa-reviewer` on a single story only when it touches auth, personal data, crypto or external input, with a self-contained prompt (story, files, gates already run with their log). Max 3 rounds.
 7. **Report** (§8) and **local commit** with files staged by name (the gitleaks hook runs by itself). Update the story `status` and the EPIC table in the same commit.
 
 ## 3. Parallel waves
@@ -39,19 +39,21 @@ At the start of an epic (or a large feature), plan before implementing:
    - **EF migrations**: in a wave, only one story creates a migration; if several are needed, regenerate after merging.
    - Service and endpoint registration, Angular routes, global styles, shared fixtures: the agent declares them in its report and the orchestrator resolves them when merging.
    - The prototype is never edited in parallel.
-5. **Integrate**: the orchestrator merges branches one by one into the epic branch, resolves conflicts and runs the **wave-level gates** (§4) plus one `qa-reviewer` pass over the whole. If something fails, it is fixed before the next wave.
+5. **Integrate**: the orchestrator merges branches one by one into the epic branch, resolves conflicts and runs the **wave-merge gates** (§4). If something fails, it is fixed before the next wave. The QA pass runs once, at epic close.
 6. After the last wave, the **epic Definition of Done** ([02-templates](02-templates.md)).
 
-## 4. Gates (two levels)
+## 4. Gates (three levels)
 
 The exact commands live in the repo's `CLAUDE.md`, ideally in a `scripts/gates.sh <level>` script.
 
 | Level | When | What |
 |---|---|---|
 | **Story** | Every story (also inside each parallel agent) | lint, types, unit, build of what changed, parity of its screens |
-| **Wave / epic** | After integrating a wave and when closing the epic | all of the above in full + integration (Testcontainers), E2E, parity of every screen, docker build, dependency audit |
+| **Feature** | After the last story of a feature | integration (Testcontainers) of the feature's endpoints and flows |
+| **Wave merge** | After merging a wave, before the next one | build and unit of the merged branch, and the shared files (migrations, routes, DI) |
+| **Epic** | When closing the epic | E2E, parity of every screen and state, docker build, dependency audit, plus the epic QA pass ([run-epic](../skills/run-epic/SKILL.md) step 6) |
 
-Order: fastest first.
+Order: fastest first. Each level runs on what it can see: the story gate does not wait for integration, but the feature gate catches what stories cannot see alone.
 
 ## 5. Medium parity with the prototype
 
@@ -87,7 +89,14 @@ Everything else: carry on, recording `A#` assumptions in the EPIC.
 
 ### `security-audit` skill
 
-- **Install**: `npx skills add https://github.com/cloudflare/security-audit-skill --skill security-audit --global`, or copy its `skills/security-audit` folder into `~/.claude/skills/`. Needs Node.
+- **Install (pinned)**: `cloudflare/security-audit-skill` at commit `c1c8a8c1471069fb0e188eeaff69b8e8db6564a8` (reviewed 2026-11-20; the repo has no tags). Install only with the user's approval, since it writes outside the workspace:
+  ```bash
+  SHA=c1c8a8c1471069fb0e188eeaff69b8e8db6564a8
+  D=$(mktemp -d) && curl -sfL "https://github.com/cloudflare/security-audit-skill/archive/$SHA.tar.gz" | tar -xz -C "$D" \
+    && rm -rf ~/.claude/skills/security-audit && cp -r "$D"/security-audit-skill-*/skills/security-audit ~/.claude/skills/ \
+    && mkdir -p ~/.config/ai-kickstart && echo "$SHA" > ~/.config/ai-kickstart/security-audit.pinned
+  ```
+  **Check** (before any deploy step): `test "$(cat ~/.config/ai-kickstart/security-audit.pinned 2>/dev/null)" = c1c8a8c1471069fb0e188eeaff69b8e8db6564a8`. If it fails, the deploy step stops and the install block above is shown to the user. Upgrading means reviewing the new commit's diff, then changing the SHA here; never install `main` or `npx` without the SHA. Needs Node for its validators.
 - **Two modes**: *guidance* (questions or a focused review, writes no files) and *full audit* (ask explicitly: "security audit this repo, quick profile"). The full one launches many subagents: it is expensive.
 - **Profile**: `quick` when closing an epic that is going to be deployed; `standard` before the first production release or after changes to auth, data or dependencies; `deep` only for sensitive third-party data. An agent budget can be set.
 - **Output**: outside the repo, in `~/security-audit-skill/<repo>/run-N/` (`REPORT.md`, `findings.json`…). It is cumulative: each run builds on the previous ones.
@@ -102,7 +111,7 @@ Also: no secrets in the repo or the frontend; nothing installed system-wide with
 
 **Per story:** files changed · one line per gate (pass / fail / NOT RUN + reason) · parity per screen · criterion → test proving it · shared files touched · new decisions and assumptions · open questions · commit hash.
 
-**Per wave:** branches merged and conflicts resolved · wave-level gates · `qa-reviewer` findings.
+**Per wave:** branches merged and conflicts resolved · wave-merge gates · feature gate if one closed.
 
 **At the end of the epic:** stories done (with hash), skipped and why, NOT RUN gates, migrations to apply, accepted vulnerable dependencies, `check-sensitive` and `security-audit` results, assumptions to confirm, open questions, epic DoD checklist, and, if the epic is deployed, the **proposed version with its reason and the draft release notes** (§10).
 

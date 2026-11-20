@@ -7,6 +7,7 @@ description: Analyse and improve an existing app with AI Kickstart - diagnosis w
 
 The methodology lives in `../../methodology/` relative to this skill's folder. Deliver the whole package **without asking first**: new decisions are recorded as `proposed` and questions go at the end, in `internal_docs/README.md`. Everything goes on a `chore/ai-kickstart` branch of the repo, under `internal_docs/`. **Language**: that of the app's existing docs; if there are none, it is the only question asked up front (English or Spanish).
 
+0. **Prerequisites**: `security-audit` must be installed at the pinned commit (check in `03-execution` §7). Missing: report it and offer the install block, with approval. Analysis goes on without it; deploying does not.
 1. **Local repo** (to clone a private one, use `gh repo clone`). Branch `chore/ai-kickstart`.
 2. **Old docs**: if the repo already has documentation, reorganise it with `git mv` (history keeps it); if it lives outside the repo, don't delete it.
 3. **`Architecture/02-diagnosis.md`**: findings with `file:line`, an area / severity / epic table and baseline gates (anything not run: `NOT RUN`). For a large repo, read-only subagents.
