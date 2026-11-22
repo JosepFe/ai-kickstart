@@ -68,6 +68,7 @@ handler, validation) with its tests. No shared "services" layer unless two slice
 ````bash
 #!/usr/bin/env bash
 # Blocks the commit if gitleaks finds a secret in the staged changes.
+# Needs gitleaks 8.19+ (the `git` subcommand).
 set -euo pipefail
 if ! command -v gitleaks >/dev/null; then
   echo "pre-commit: gitleaks not installed (https://github.com/gitleaks/gitleaks)" >&2

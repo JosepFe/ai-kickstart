@@ -40,7 +40,7 @@ Vision, architecture, epics, stories, QA and the index are written in that langu
 | # | Question | Options |
 |---|---|---|
 | B1 | **Platform** | Desktop web · mobile (PWA) · both (say which one leads) |
-| B2 | **Deployment** | **Docker only** (default: `docker compose` on any server or locally) · self-hosted server / homelab (its own flow is followed: proxy, domains, backups) · cloud (say which) |
+| B2 | **Deployment** | **Docker only** (default: `docker compose` on any server or locally) · self-hosted server / homelab (its own flow is followed: proxy, domains, backups; the app deploys by publishing a release, [03-execution](03-execution.md) §10) · cloud (say which) |
 | B3 | **Access** | No login · own login · Google or other OAuth · company SSO. Exposed to the internet or internal network only? |
 | B4 | **Special requirements** | Real time · offline · notifications · several languages · accessibility beyond AA · none |
 

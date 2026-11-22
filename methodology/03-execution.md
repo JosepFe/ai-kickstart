@@ -155,5 +155,6 @@ A deployed app gets a named version: tag `vX.Y.Z` on the commit that is deployed
 
   Security fixes are named by their effect ("invite links can be regenerated"), never by how the weakness was exploited (same rule as the `security-audit` summary, §7). No personal data, private domains or internal IPs (`check-sensitive` reads the notes too).
 - **When**: the tag is created and pushed only with the order to deploy (pushing it publishes). The draft notes travel in the epic report until then.
+- **Publishing is deploying** (self-hosted server): the server follows the latest `X.Y.Z` image of each app on its own (e.g. a cron that asks the registry), so deploying a new version needs nothing outside the app's repo: the tag is the order. The server's repo only records the exceptions: a pinned version to hold back or roll back, written there by hand. The release workflow tags the images in a fixed order and the server watches the last one, so it never sees a half-published version.
 - **Scaffold**: a `release` workflow triggered by `v*` tags that runs the gates, publishes the images or build as `X.Y.Z` and creates the release with the notes file (`internal_docs/Releases/vX.Y.Z.md` in the repo, or the tag's message).
 
