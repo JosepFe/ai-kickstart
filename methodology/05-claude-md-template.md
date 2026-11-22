@@ -9,7 +9,7 @@ status: active
 
 # CLAUDE.md, agent, skills and hook
 
-Fill in the `{{}}`. The `qa-reviewer` agent and the `run-story` and `run-epic` skills ship with the `ai-kickstart` plugin (`agents/`, `skills/`): their templates are here in case you want to copy them into a repo and adapt them. The hook is ready in `templates/githooks/pre-commit`.
+Fill in the `{{}}`. The `qa-reviewer` agent and the `run-story` and `run-epic` skills ship with the `ai-kickstart` plugin (`agents/`, `skills/`): their templates are here in case you want to copy them into a repo and adapt them. The hook is ready in `templates/githooks/pre-commit` and the status script in `templates/scripts/epic-status.py`.
 
 ## CLAUDE.md
 
@@ -37,8 +37,9 @@ Dependencies: `npm audit --audit-level=high`, `dotnet list package --vulnerable 
 ## Story loop — follow exactly
 When asked to implement a story: READ (story, feature, epic D#/A#/Q#, prototype screen) →
 IMPLEMENT only that story → TEST AUDIT (every changed file has a test) → GATES (story level) →
-REPORT → one local COMMIT, files staged by name, story status and
-epic table updated in the same commit.
+REPORT (into the story's `## Report`) → one local COMMIT, files staged by name, story
+`status`/`finished` set and `python3 scripts/epic-status.py --write` run in the same commit.
+The story `status` is the source of truth: never edit the Status column of EPIC/FEATURE by hand.
 
 ## Parallel waves
 When asked to run an epic in parallel: plan waves from the epic dependencies (no shared
@@ -82,7 +83,7 @@ Enable once per clone: `git config core.hooksPath .githooks` (in the scaffold, w
 ````markdown
 ---
 name: qa-reviewer
-description: Independent read-only review of a finished story or wave: acceptance criteria to test mapping, test audit, parity spec present for each screen, targeted checks. Never edits files.
+description: Independent read-only review. Story mode (auth, personal data, crypto or external input only): acceptance criteria to test mapping, test audit, parity spec per screen, targeted checks. Epic mode at epic close. Never edits files.
 tools: Read, Grep, Glob, Bash
 ---
 You review work you did not write. Inputs: story paths, changed files, gates already run
@@ -92,7 +93,7 @@ with their log path. Budget about 5 minutes.
 3. For a wave: check merged shared files (migrations, routes, DI registration) are consistent.
 4. Re-run only targeted checks (one spec, grep). Gates you did not re-run are NOT VERIFIED.
 5. Report: blockers, should-fix, nits. Never modify files.
-Epic mode (epic close, one round): inputs are EPIC.md, each FEATURE.md and the story and wave reports, not the diff. Check that every feature criterion C# is covered by a story that passed its gates, that every D#/A#/Q# is consistent, and list every NOT RUN and NOT VERIFIED item.
+Epic mode (epic close, one round): inputs are the output of `scripts/epic-status.py --summary E0N`, EPIC.md, each FEATURE.md, the stories' `## Report` and the EPIC's `## Waves`, not the diff. Don't redo what the summary counts; one section per feature: is each C# really proven by the named tests, did each non-functional check run, do D#/A#/Q# contradict a story.
 ````
 
 ## `.claude/skills/run-story/SKILL.md`
@@ -104,7 +105,7 @@ description: Implement one story end to end with the story loop of CLAUDE.md and
 ---
 Given a story id (E0N/US-NNN): check it is Ready (methodology 02-templates DoR), run the
 story loop from CLAUDE.md, ask the qa-reviewer agent for an independent review only if the
-story touches auth, personal data, crypto or external input (max 3 rounds), write the report (03-execution §8), update the story status and the epic table,
+story touches auth, personal data, crypto or external input (max 3 rounds), write the report into the story's `## Report` (03-execution §8), set the story status and `finished`, run `python3 scripts/epic-status.py --write`,
 and make one local commit with files staged by name.
 ````
 
@@ -119,7 +120,9 @@ Given an epic id: read EPIC.md and its stories. If parallel was asked, build the
 (03-execution §3: only independent M/L stories, max 3 per wave, one migration per wave),
 show it and wait for approval. For each story, run-story (in parallel: one subagent per
 story in its own worktree and branch). After each wave, merge one by one, run wave-merge
-gates. At the end: epic gates, qa-reviewer in epic mode (one round), dependency audit, epic DoD
+gates, `scripts/epic-status.py --write`, wave report into the EPIC's `## Waves`. At the end: epic gates,
+`scripts/epic-status.py --summary E0N`, qa-reviewer in epic mode (one round, small model) only if the
+summary says so, dependency audit, epic DoD
 checklist (02-templates), security-audit if the app is ready to deploy, and the epic
 report. Never push: tell the user to run check-sensitive first.
 ````

@@ -16,5 +16,5 @@ The methodology lives in `../../methodology/` relative to this skill's folder. D
 6. **`Design/prototype.html`**: hard gate, `proposed` until the user approves it. `Design/README.md` with tokens, computed contrast and the parity matrix.
 7. **Epic map (paragraph + feature sketch) and inventory** before the prototype; **epics, features, stories and QA** after it, in one pass. If the stack is being migrated, use the default stack in `06-questionnaire-and-stack.md`.
 8. **`internal_docs/README.md`** with epics, open questions and the launch prompt.
-9. **`CLAUDE.md`** (`05-claude-md-template.md`) and the `.githooks/pre-commit` hook (from `../../templates/githooks/`; enable it only with approval). **Local** commit; never push unless asked, and run `check-sensitive` before.
+9. **`CLAUDE.md`** (`05-claude-md-template.md`) the `.githooks/pre-commit` hook (from `../../templates/githooks/`; enable it only with approval) and `scripts/epic-status.py` (from `../../templates/scripts/`). **Local** commit; never push unless asked, and run `check-sensitive` before.
 10. Short summary: serious findings, design proposal and what the user has to approve.

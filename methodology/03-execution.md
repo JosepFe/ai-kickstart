@@ -26,7 +26,7 @@ status: active
 4. **Test audit**: `git diff --name-only` + new files; every change has its test, written **before** the gates.
 5. **Story-level gates** (§4) in order; on failure, fix and rerun from the failing one, then all.
 6. **Review**: no per-story review. The epic's QA pass ([run-epic](../skills/run-epic/SKILL.md) step 6) reads the story reports. Run `qa-reviewer` on a single story only when it touches auth, personal data, crypto or external input, with a self-contained prompt (story, files, gates already run with their log). Max 3 rounds.
-7. **Report** (§8) and **local commit** with files staged by name (the gitleaks hook runs by itself). Update the story `status` and the EPIC table in the same commit.
+7. **Report** (§8), written into the story's `## Report`, and **local commit** with files staged by name (the gitleaks hook runs by itself). In the same commit: the story `status` and `finished`, and `scripts/epic-status.py --write` for the FEATURE and EPIC tables ([02-templates](02-templates.md), "Status"). `started` is set when the loop starts.
 
 ## 3. Parallel waves
 
@@ -39,7 +39,7 @@ At the start of an epic (or a large feature), plan before implementing:
    - **EF migrations**: in a wave, only one story creates a migration; if several are needed, regenerate after merging.
    - Service and endpoint registration, Angular routes, global styles, shared fixtures: the agent declares them in its report and the orchestrator resolves them when merging.
    - The prototype is never edited in parallel.
-5. **Integrate**: the orchestrator merges branches one by one into the epic branch, resolves conflicts and runs the **wave-merge gates** (§4). If something fails, it is fixed before the next wave. The QA pass runs once, at epic close.
+5. **Integrate**: the orchestrator merges branches one by one into the epic branch, resolves conflicts and runs the **wave-merge gates** (§4). If something fails, it is fixed before the next wave. EPIC and FEATURE tables are never resolved by hand in a conflict: take either side and run `scripts/epic-status.py --write`. The wave report goes into the EPIC's `## Waves`. The QA pass runs once, at epic close.
 6. After the last wave, the **epic Definition of Done** ([02-templates](02-templates.md)).
 
 ## 4. Gates (three levels)
@@ -51,7 +51,7 @@ The exact commands live in the repo's `CLAUDE.md`, ideally in a `scripts/gates.s
 | **Story** | Every story (also inside each parallel agent) | lint, types, unit, build of what changed, parity of its screens |
 | **Feature** | After the last story of a feature | integration (Testcontainers) of the feature's endpoints and flows |
 | **Wave merge** | After merging a wave, before the next one | build and unit of the merged branch, and the shared files (migrations, routes, DI) |
-| **Epic** | When closing the epic | E2E, parity of every screen and state, docker build, dependency audit, plus the epic QA pass ([run-epic](../skills/run-epic/SKILL.md) step 6) |
+| **Epic** | When closing the epic | E2E, parity of every screen and state, docker build, dependency audit, `scripts/epic-status.py`, plus the epic QA pass (§8) |
 
 Order: fastest first. Each level runs on what it can see: the story gate does not wait for integration, but the feature gate catches what stories cannot see alone.
 
@@ -109,9 +109,16 @@ Also: no secrets in the repo or the frontend; nothing installed system-wide with
 
 ## 8. Report
 
-**Per story:** files changed · one line per gate (pass / fail / NOT RUN + reason) · parity per screen · criterion → test proving it · shared files touched · new decisions and assumptions · open questions · commit hash.
+Reports are written in the repo, not only in the chat: the epic QA pass reads them from there.
 
-**Per wave:** branches merged and conflicts resolved · wave-merge gates · feature gate if one closed.
+**Per story** (in the story's `## Report`): files changed · one line per gate (pass / fail / NOT RUN + reason) · parity per screen · criterion → test proving it · shared files touched · new decisions and assumptions · open questions. The commit hash is not written: `epic-status.py` takes it from git.
+
+**Per wave** (in the EPIC, `## Waves` → `### Wave N`): stories and branches merged, conflicts resolved · wave-merge gates · feature gate if one closed.
+
+**Epic QA pass** (at close, [run-epic](../skills/run-epic/SKILL.md) step 6):
+1. `python3 scripts/epic-status.py --summary E0N`: per feature, story status with start, end and commit, criteria C# without a finished story, `proposed` decisions, open questions, and every NOT RUN / NOT VERIFIED line. It costs no model.
+2. `qa-reviewer` in epic mode, **only if** the summary says so (more than one wave, or a feature with non-functional requirements): one round, a small model (e.g. Haiku), it reads the summary, `EPIC.md`, each `FEATURE.md` and the reports, not the diff, and writes one section per feature. It only reports.
+3. Otherwise the summary is the QA, pasted into the epic report.
 
 **At the end of the epic:** stories done (with hash), skipped and why, NOT RUN gates, migrations to apply, accepted vulnerable dependencies, `check-sensitive` and `security-audit` results, assumptions to confirm, open questions, epic DoD checklist, and, if the epic is deployed, the **proposed version with its reason and the draft release notes** (§10).
 

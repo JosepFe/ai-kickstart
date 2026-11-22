@@ -80,10 +80,13 @@ Stories: {{list}}. Out of scope: {{list}}. Already approved assumptions: {{A#}}.
 ## For each story
 1. Full loop (03-execution §2), with no per-story review (qa-reviewer only if the story touches auth, personal data, crypto or external input).
 2. One local commit, files by name, message in English, no --no-verify.
-3. Update the story status and the EPIC table in the same commit.
+3. In the same commit: the report in the story's `## Report`, its `status`/`finished`, and
+   `python3 scripts/epic-status.py --write` (never the EPIC/FEATURE Status column by hand).
 
 ## For each wave (if parallel)
-Merge branches one by one, wave-merge gates, wave report. At epic close, one qa-reviewer pass in epic mode.
+Merge branches one by one, wave-merge gates, `scripts/epic-status.py --write`, wave report into the
+EPIC's `## Waves`. At epic close: `scripts/epic-status.py --summary E0N`, and one qa-reviewer pass in
+epic mode (small model) only if the summary asks for it.
 
 ## Stop and ask me if
 A product question has no answer, a story is bigger than its size, a dependency is not

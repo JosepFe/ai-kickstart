@@ -9,12 +9,12 @@ The methodology lives in `../../methodology/` relative to this skill's folder (t
 
 Given a story (`E0N/US-NNN`):
 
-1. **Ready**: check the DoR. If something is missing (dependency not done, open question without an `A#`, screen missing from the prototype), stop and ask.
+1. **Ready**: check the DoR. If something is missing (dependency not done, open question without an `A#`, screen missing from the prototype), stop and ask. Otherwise set `status: in-progress` and `started: <now, ISO>` in the story.
 2. **Read**: the story, its FEATURE, the EPIC (D#, A#, Q#) in `internal_docs/Epics/`, the architecture of what it touches and its screen in `internal_docs/Design/prototype.html`. The repo's `CLAUDE.md` rules on commands and conventions.
 3. **Implement** only what the story asks (and everything its screen shows).
 4. **Test audit**: every changed file has its test, before the gates.
 5. **Story-level gates** from `CLAUDE.md`, in order. Anything that can't run: `NOT RUN` with the reason.
 6. **Review**: none by default; the epic's QA pass reviews the reports. Run `qa-reviewer` on this story only if it touches auth, personal data, crypto or external input (self-contained prompt: story, files, gates run and their log). Max 3 rounds.
-7. **Report** (§8) and **one local commit** with files staged by name (never `git add -A`, never `--no-verify`), with the story `status` and the EPIC table updated in the same commit.
+7. **Report** (§8), written into the story's `## Report` and shown to the user, and **one local commit** with files staged by name (never `git add -A`, never `--no-verify`). In the same commit: story `status: done` and `finished: <now, ISO>`, then `python3 scripts/epic-status.py --write` (it updates the FEATURE and EPIC tables; never edit their Status column by hand).
 
 Never push or deploy. If cutting scope or deferring something seems necessary: ask.

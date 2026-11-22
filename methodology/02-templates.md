@@ -20,6 +20,7 @@ Headings below are in English; in a Spanish project, translate them (the structu
   CLAUDE.md
   .claude/                               (only repo-specific additions: the agent and skills come with the plugin)
   .githooks/pre-commit                   (gitleaks)
+  scripts/epic-status.py                 (story status → EPIC/FEATURE tables, QA summary)
   internal_docs/
     README.md                            index: links, epic table, roadmap, open questions
     Architecture/  00-vision.md  01-architecture.md
@@ -33,7 +34,11 @@ Headings below are in English; in a Spanish project, translate them (the structu
 - **Relative markdown links** (`[EPIC](../E01-x/EPIC.md)`), no wikilinks: they work on GitHub, in the editor and in Obsidian (opening `internal_docs/` as a vault).
 - Git keeps the history: no `_archive-v1/` folders in the repo.
 - Story numbering is **continuous per epic** (`E03/US-004`), not per feature.
-- Documents in the language chosen at kickoff (English or Spanish, questionnaire question 0); file names, endpoints, code and `CLAUDE.md` in English.
+- Documents in the language chosen at kickoff (English or Spanish, questionnaire question 0); file names, endpoints, code and `CLAUDE.md` in English. Status values (`todo`, `in-progress`…) stay in English.
+
+### Status: one source of truth
+
+The `status` in each `US-NNN.md` frontmatter is the only one written by hand (by `run-story`). The Status column of the EPIC and FEATURE tables and the `status` of each FEATURE and EPIC follow from it: `python3 scripts/epic-status.py --write` updates them, and without arguments it only checks (exit 1 on any mismatch). A feature or epic is `done` when all its stories are `done` (or `deferred` with approval), `in-progress` as soon as one starts. An external tracker (Azure DevOps, Jira, GitHub Issues), if there is one, mirrors this status; it never leads.
 
 ### Personal notes (what does not go into the repo)
 
@@ -98,8 +103,9 @@ status: draft | ready | in-progress | done
 ## Assumptions      | ID | Assumption | If it does not hold |
 ## Risks            | ID | Risk | Mitigation |
 ## Open questions   | ID | Question | Owner | Assumption meanwhile |
-## Stories          | US | Title | Feature | Size | Depends on | Status |
+## Stories          | US | Title | Feature | Size | Depends on | Status |   (Status: epic-status.py)
 ## Dependencies     (ASCII: US-001 ──▶ US-003 ──▶ US-005)
+## Waves            (parallel only: one `### Wave N` per wave, with its report, 03-execution §8)
 ```
 
 A decision the user has not stated stays **`proposed`**: never "approved by the user" on their behalf.
@@ -133,7 +139,7 @@ status: draft | ready | in-progress | done
 | Accessibility | … on `#screen-…` | … |
 
 ## Stories
-| US | Title | Covers | Size | Depends on | Status |
+| US | Title | Covers | Size | Depends on | Status |   (Status: epic-status.py)
 ```
 
 Every criterion is covered by at least one story's acceptance criteria, and each non-functional requirement has a check. A criterion without a story is a blocker, not a note.
@@ -148,6 +154,8 @@ description: "<one line>"
 tags: [<project>, user-story, e0n]
 timestamp: <ISO>
 status: todo | in-progress | done | deferred
+started: <ISO, when run-story starts it>
+finished: <ISO, when its gates are green>
 ---
 # US-NNN — <title>
 
@@ -170,6 +178,8 @@ Shared files it touches (migrations, routes, service registration): matters for 
 | Level | File | Criterion |
 
 ## Out of scope
+
+## Report   (written by run-story when it closes the story, 03-execution §8)
 ```
 
 Sizes: **S** 15-30 min · **M** 30-60 min · **L** 1-2 h. Bigger, or more than 5 criteria: slice it before planning.
@@ -195,13 +205,13 @@ Sizes: **S** 15-30 min · **M** 30-60 min · **L** 1-2 h. Bigger, or more than 5
 1. Every criterion proven by a named test.
 2. Applicable gates green; those that could not run, `NOT RUN` with the reason.
 3. With UI: its screen's parity test passes.
-4. Touched docs (`internal_docs/`) updated **in the same commit**; story status and EPIC table updated.
+4. Touched docs (`internal_docs/`) updated **in the same commit**: story `status`, `finished` and `## Report` written, then `scripts/epic-status.py --write`.
 5. Local commit with the gitleaks hook green.
-6. Report delivered ([03-execution](03-execution.md) §8).
+6. Report delivered ([03-execution](03-execution.md) §8), the same one written in the story.
 
 ## Definition of Done (epic)
 
-1. Every story `done`, or `deferred` with explicit approval.
+1. Every story `done`, or `deferred` with explicit approval; `scripts/epic-status.py` passes (no mismatch).
 2. **Full gates** green after integrating the last wave (unit, integration, build, E2E, parity of every screen in the epic, docker build); `NOT RUN` with reason.
 3. **Dependencies** with no high or critical vulnerabilities (`npm audit`, `dotnet list package --vulnerable --include-transitive`), or accepted in writing as a `D#`.
 4. **Migrations** reviewed: they apply from scratch and over the previous version; with real data, a rollback plan.

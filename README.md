@@ -43,6 +43,7 @@ Skills also understand requests in Spanish.
 | `check-sensitive` | skill | Secrets and sensitive data in what is about to be pushed |
 | `qa-reviewer` | agent | Independent, read-only review. At epic close it checks the feature criteria against the stories |
 | `pre-commit` | hook | gitleaks on every commit (`templates/githooks/`, copied by `new-project`) |
+| `epic-status.py` | script | story status → EPIC/FEATURE tables, and the mechanical part of the epic QA (`templates/scripts/`, copied by `new-project`) |
 | `methodology/` | docs | The full method: phases, templates, execution rules, prompts, questionnaire and stack |
 
 Each story is one Given/When/Then file bound to its prototype screens. Each epic records decisions `D#`, assumptions `A#`, risks `R#` and open questions `Q#`.

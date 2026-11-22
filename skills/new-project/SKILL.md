@@ -18,5 +18,5 @@ The methodology lives in `../../methodology/` relative to this skill's folder. R
    - Phase 3: epic map (paragraph + feature sketch) and screen inventory. No EPIC.md or stories yet.
    - Phase 4: prototype, hard gate, `proposed` until approved.
    - Phase 5: epics, features and stories in one pass, looking at the prototype.
-   - Phase 6: QA, scaffold (with `CLAUDE.md` from `05-claude-md-template.md` and the hook from `../../templates/githooks/pre-commit` copied to `.githooks/`; enable it with `git config core.hooksPath .githooks` only with approval), `internal_docs/README.md` and the consistency check.
+   - Phase 6: QA, scaffold (with `CLAUDE.md` from `05-claude-md-template.md` and the hook from `../../templates/githooks/pre-commit` copied to `.githooks/` and `../../templates/scripts/epic-status.py` to `scripts/`; enable it with `git config core.hooksPath .githooks` only with approval), `internal_docs/README.md` and the consistency check.
 7. **Deliver** a summary after each phase and, at the end, the launch prompt (`04-prompts.md` §2) filled in. Local commit only if the user asks; never push.
