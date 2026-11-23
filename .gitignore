@@ -16,3 +16,6 @@ Thumbs.db
 
 # Dependencias y salidas locales
 node_modules/
+
+# claude plugin eval results
+evals/results/
