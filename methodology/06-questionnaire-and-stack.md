@@ -62,7 +62,7 @@ Used unless the user says otherwise. Versions: the latest stable (LTS for .NET) 
 | Backend | **.NET** with **Vertical Slice Architecture** | Minimal APIs; one slice per use case in `Features/<Feature>/<UseCase>/` (endpoint, request/response, handler, validation) with its tests next to it; EF Core with migrations; xUnit + Testcontainers for integration |
 | Database | **Postgres** | Always justified in `00-vision.md`. **SQLite** if single-user or embedded, low volume and no concurrency; anything else (Redis, search…) only as a complement and with a reason |
 | Runtime | **Docker**: one `Dockerfile` per service and `docker-compose.yml` | Configuration via environment variables, `.env.example` in the repo and `.env` in `.gitignore` |
-| Quality | gitleaks (pre-commit), dependency audit (`npm audit`, `dotnet list package --vulnerable`), `security-audit` skill before deploying | [03-execution](03-execution.md) §7 |
+| Quality | gitleaks (pre-commit), dependency audit (`npm audit`, `dotnet list package --vulnerable`), `security-audit` skill (light review per epic, full audit by hand) | [03-execution](03-execution.md) §7 |
 
 ## Repository layout (default)
 

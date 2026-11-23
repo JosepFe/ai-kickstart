@@ -19,7 +19,7 @@ Needs Claude Code and git. Inside Claude Code:
 
 No configuration: everything project-specific is asked per project. `new-project` checks the other tools (gitleaks, Node, Docker, .NET) and tells you what is missing and how to install it. gitleaks 8.19+ is needed before the first commit.
 
-The pre-deploy audit uses the Cloudflare `security-audit` skill, pinned to a reviewed commit. Its install block and the check are in [methodology/03-execution.md](methodology/03-execution.md) §7.
+The security review (light at every epic close, full when you decide) uses the Cloudflare `security-audit` skill, pinned to a reviewed commit. Its install block and the check are in [methodology/03-execution.md](methodology/03-execution.md) §7.
 
 ## Use
 
@@ -56,7 +56,8 @@ Each story is one Given/When/Then file bound to its prototype screens. Each epic
 | Every commit | gitleaks hook blocks secrets |
 | Before every push | `check-sensitive`: real personal data, private domains, internal IPs, personal paths, private notes |
 | Closing an epic | dependency audit (`npm audit`, `dotnet list package --vulnerable`) |
-| Before deploying | `security-audit` at its pinned commit (`quick` or `standard` profile); the summary goes to your personal notes, not the repo, and fixes become stories or accepted risks `D#` |
+| Closing an epic | light security review: `security-audit` in guidance mode over the epic's diff, no subagents; fixes become stories or accepted risks `D#` |
+| When you decide | full `security-audit` (expensive: many agents), from the prompt in `templates/security-audit-prompt.md` copied to your notes, with an agent budget; its summary goes to your personal notes, not the repo |
 
 ## Privacy
 

@@ -49,7 +49,8 @@ In your own notes system (Obsidian, Notion, a folder…), outside the repo:
   Index          what it is, link to the repo and to internal_docs/README.md, one-line status
   To-do          where the work was left
   Notes/         ideas, personal notes, private context (servers, accounts, people)
-  Security/      YYYY-MM-DD-security-audit.md (summaries of each security-audit: they list open weaknesses)
+  Security/      security-audit-prompt.md (the full audit, ready to paste: templates/security-audit-prompt.md)
+                 YYYY-MM-DD-security-audit.md (summaries of each full audit: they list open weaknesses)
 ```
 
 Rule: if something should not be visible on GitHub even in a private repo, it goes into personal notes; if it is needed to implement, it goes into the repo **without the sensitive value** (e.g. "the public domain, in the `PUBLIC_URL` variable").
@@ -216,7 +217,7 @@ Sizes: **S** 15-30 min · **M** 30-60 min · **L** 1-2 h. Bigger, or more than 5
 3. **Dependencies** with no high or critical vulnerabilities (`npm audit`, `dotnet list package --vulnerable --include-transitive`), or accepted in writing as a `D#`.
 4. **Migrations** reviewed: they apply from scratch and over the previous version; with real data, a rollback plan.
 5. **`check-sensitive`** clean before the push.
-6. If the epic leaves the app ready to deploy (or is the last one): **`security-audit`** done (`quick` or `standard` profile, [03-execution](03-execution.md) §7), summary in your personal notes (never in the repo) and no open critical or high findings (fixed by a story, or accepted as a `D#` in the EPIC).
+6. **Light security review** of the epic's diff done ([03-execution](03-execution.md) §7) and no open critical or high findings (fixed by a story, or accepted as a `D#` in the EPIC). The full `security-audit` is not part of the DoD: the user runs it by hand when they decide.
 7. **Operations** (if deployed): environment variables in `.env.example` and in the architecture, healthcheck, database backups and, on a self-hosted server, its setup there (proxy, domains, backups, monitoring).
 8. Docs up to date: `internal_docs/README.md`, epic map, EPIC and the epic's final report.
 9. **Release** (if deployed): proposed version with its reason and draft notes ([03-execution](03-execution.md) §10); a major or `1.0.0` approved as a `D#`; the tag `vX.Y.Z` is created only with the order to deploy.

@@ -124,6 +124,6 @@ story in its own worktree and branch). After each wave, merge one by one, run wa
 gates, `scripts/epic-status.py --write`, wave report into the EPIC's `## Waves`. At the end: epic gates,
 `scripts/epic-status.py --summary E0N`, qa-reviewer in epic mode (one round, small model) only if the
 summary says so, dependency audit, epic DoD
-checklist (02-templates), security-audit if the app is ready to deploy, and the epic
-report. Never push: tell the user to run check-sensitive first.
+checklist (02-templates), light security review of the epic diff (security-audit guidance mode, no
+subagents; never the full audit), and the epic report. Never push: tell the user to run check-sensitive first.
 ````

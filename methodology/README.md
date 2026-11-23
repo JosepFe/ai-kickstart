@@ -18,7 +18,7 @@ status: active
 | Short DoR / DoD (story and epic), SPIDR for slicing | Consistency: a short checklist |
 | 1 story = 1 iteration = 1 local commit, honest gates (`NOT RUN`) | Agents: `qa-reviewer` and, when it pays off, parallel implementers in waves |
 | Project docs **in the repo** (`internal_docs/`) | Anything personal or sensitive stays outside the repo |
-| Security: gitleaks on every commit, `check-sensitive` before pushing, `security-audit` before deploying | Default stack: Angular + .NET (Vertical Slice) + Postgres on Docker |
+| Security: gitleaks on every commit, `check-sensitive` before pushing, a light `security-audit` review per epic, the full audit by hand | Default stack: Angular + .NET (Vertical Slice) + Postgres on Docker |
 | Stop and ask before cutting scope | No separate ADRs: they live in the decisions table |
 
 ## Flow
@@ -26,7 +26,7 @@ status: active
 1. **Define**: `new-project` skill (or the prompt in [04-prompts](04-prompts.md) §1). Claude runs the 6 phases of [01-methodology](01-methodology.md): discovery with questionnaire → architecture → epic map and screen inventory → **prototype** → epics, features and stories → QA, scaffold and index.
 2. **Build**: `run-story` (one story) or `run-epic` (one epic, in series or in parallel waves), or the prompt in [04-prompts](04-prompts.md) §2. Rules in [03-execution](03-execution.md).
 3. **Push**: `check-sensitive` before every push.
-4. **Deploy**: epic DoD ([02-templates](02-templates.md)) and `security-audit`.
+4. **Deploy**: epic DoD ([02-templates](02-templates.md)), with the light security review. The full `security-audit` when you decide, from the prompt in your notes.
 
 For an existing app: `review-app` skill.
 
