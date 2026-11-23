@@ -63,3 +63,42 @@ Used unless the user says otherwise. Versions: the latest stable (LTS for .NET) 
 | Database | **Postgres** | Always justified in `00-vision.md`. **SQLite** if single-user or embedded, low volume and no concurrency; anything else (Redis, search…) only as a complement and with a reason |
 | Runtime | **Docker**: one `Dockerfile` per service and `docker-compose.yml` | Configuration via environment variables, `.env.example` in the repo and `.env` in `.gitignore` |
 | Quality | gitleaks (pre-commit), dependency audit (`npm audit`, `dotnet list package --vulnerable`), `security-audit` skill before deploying | [03-execution](03-execution.md) §7 |
+
+## Repository layout (default)
+
+A recommendation, not a rule: it is what the default stack ends up with, so agents find things without being told. Each repo writes its own in `CLAUDE.md` if it differs.
+
+**One repo per app**: frontend, backend, docs and deployment together, with one version and one release. Several apps in one repo (a monorepo) only when they share code that changes with them (a common library); then each app has its own image workflow filtered by `paths`, and a release per app needs a prefixed tag (`news-v1.2.0`): the release template assumes one app per repo.
+
+```
+<repo>/
+  CLAUDE.md  README.md  .env.example  docker-compose.yml
+  .githooks/pre-commit
+  .github/workflows/     CI (gates, then sha-<commit> images on the main branch) · release.yml
+  scripts/               epic-status.py · gates.sh <level> (or the Makefile / npm scripts it calls)
+  internal_docs/         02-templates
+  backend/
+    <App>.slnx  global.json  Directory.Build.props  Directory.Packages.props   (central package versions)
+    Makefile               qa: format, build, unit, integration, coverage
+    Dockerfile
+    src/<App>.Api/         Features/<Feature>/<UseCase>/ (slices) · Data/ (DbContext, Migrations) · Common/
+    tests/<App>.UnitTests/  tests/<App>.IntegrationTests/   (Testcontainers)
+  frontend/
+    angular.json  package.json  playwright.config.ts  Dockerfile  nginx.conf
+    src/app/               core/ (auth, HTTP, shell) · features/<feature>/ · shared/
+    e2e/                   <feature>/*.spec.ts · parity/<screen>.parity.spec.ts
+```
+
+- `features/` on both sides follow the epic map's features where they map cleanly; a use case lives in one slice, not spread over layers.
+- Test fixtures and seeds use made-up data only (`ana@example.com`): `check-sensitive` reads them.
+- Tests that pin the clock (prototype dates) must not mix it with the real clock: cookies, tokens and caches expire on the app's clock, so a test helper that keeps them (an HTTP cookie jar, a cache) uses the same fake clock, or the suite breaks on a date.
+- Tests that check the app's version read it from where the release sets it (`<Version>` in the `.csproj`, `package.json`), never a literal: every release would break them.
+
+## Optional skills (not installed by the scaffold)
+
+Only when the project asks for them, installed with the user's approval (they write outside the workspace), and reviewed like `security-audit`: a pinned version where the tool allows it, telemetry off.
+
+| Skill | When | Watch out |
+|---|---|---|
+| [modern-web-guidance](https://github.com/GoogleChrome/modern-web-guidance) (Google Chrome) | Frontend stories that need a modern platform feature (popover, dialog, view transitions, container queries, forms, accessibility, performance): the agent looks up the guide before writing a workaround | Installs and updates itself from `@latest` (no documented pin) and sends telemetry, search queries included, unless `DISABLE_TELEMETRY=1`. Framework-agnostic: the guide says what the platform does, the Angular way stays in the story |
+| [Hallmark](https://github.com/Nutlope/hallmark) | Phase 4, only for a landing page or a marketing web, not the app's screens | It builds a self-contained HTML page with its own themes: the prototype stays the contract, so its output is a reference to copy from, never the prototype itself |
