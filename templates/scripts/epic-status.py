@@ -18,6 +18,7 @@ STORY_ID = re.compile(r"US-\d+")
 STATUS_COLS = {"status", "estado"}
 NONE_VALUES = {"", "none", "ninguno", "ninguna", "-", "—"}
 FLAG = re.compile(r"NOT RUN|NOT VERIFIED")
+STORY_STATUSES = {"todo", "in-progress", "done", "deferred"}
 
 
 def front(text):
@@ -64,9 +65,15 @@ def story_tables(lines):
             yield col, rows
 
 
+def first_word(cell):
+    """`done (`fa8dbab`)` -> `done`: a table may add the commit after the status."""
+    m = re.match(r"[a-z-]+", cell.strip().lower())
+    return m.group() if m else cell.strip()
+
+
 def derive(statuses, current):
-    """Feature/epic status from its stories; None = leave it as it is."""
-    if not statuses:
+    """Feature/epic status from its stories; None = leave it as it is (also with unknown story statuses)."""
+    if not statuses or any(s not in STORY_STATUSES for s in statuses):
         return None
     if all(s in ("done", "deferred") for s in statuses) and "done" in statuses:
         return "done"
@@ -88,8 +95,9 @@ def sync_doc(path, stories, statuses, write, problems):
     """Check (and fix) one EPIC.md or FEATURE.md against its stories."""
     text = path.read_text(encoding="utf-8")
     lines = text.split("\n")
-    seen = set()
+    seen, has_status_table = set(), False
     for col, rows in story_tables(lines):
+        has_status_table = True
         for r in rows:
             row = cells(lines[r])
             m = STORY_ID.search(row[0]) if row else None
@@ -101,11 +109,14 @@ def sync_doc(path, stories, statuses, write, problems):
                 problems.append((False, f"{path}: {sid} is in the table but has no file"))
                 continue
             want = stories[sid]["fm"].get("status", "")
-            if col < len(row) and row[col] != want:
+            if want not in STORY_STATUSES:
+                continue  # reported once per story by check()
+            if col < len(row) and first_word(row[col]) != want:
                 problems.append((True, f"{path}: {sid} table says '{row[col]}', story says '{want}'"))
                 row[col] = want
                 lines[r] = "| " + " | ".join(row) + " |"
-    for sid in sorted(set(statuses) - seen):
+    # A table without a Status column (older templates) has nothing to keep in sync.
+    for sid in sorted(set(statuses) - seen) if has_status_table else []:
         problems.append((False, f"{path}: {sid} has a file but no row in the table"))
     current = front(text).get("status", "")
     want = derive(list(statuses.values()), current)
@@ -123,6 +134,12 @@ def check(write):
     problems = []
     for epic_dir in sorted(p for p in EPICS.glob("E*") if p.is_dir()):
         stories = load(epic_dir)
+        for sid, v in stories.items():
+            st = v["fm"].get("status", "")
+            if st not in STORY_STATUSES:
+                old = v["fm"].get("state")
+                hint = f" (old format: `state: {old}` holds the story status; move it to `status:`)" if old else ""
+                problems.append((False, f"{v['path']}: status '{st}' is not one of {'|'.join(sorted(STORY_STATUSES))}{hint}"))
         for feature in sorted(epic_dir.glob("F*/FEATURE.md")):
             own = {s: v["fm"].get("status", "") for s, v in stories.items() if v["feature"] == feature.parent}
             sync_doc(feature, stories, own, write, problems)
